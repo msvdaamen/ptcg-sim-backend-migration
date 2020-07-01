@@ -3,6 +3,7 @@ import {WeaknessInterface} from "./weakness.interface";
 import {PokemonTypes} from "../types/pokemon-types";
 import {AbilityInterface} from "./ability.interface";
 import {CostTypes} from "../types/cost-types";
+import {RarityTypes} from "../types/rarity-types";
 
 export interface CardInterface {
     id: string;
@@ -17,7 +18,7 @@ export interface CardInterface {
     ability: AbilityInterface,
     number: string;
     artist: string;
-    rarity: string;
+    rarity: RarityTypes;
     series: string;
     set: string;
     setCode: string;

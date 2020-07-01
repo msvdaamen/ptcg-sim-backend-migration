@@ -15,7 +15,7 @@ export class AppController {
   async getHello() {
     const cardsPath = './pokemon-tcg-data/cards';
     let cardAmount = 0;
-    const rareties = new Set();
+    const rarities = new Set();
     const types = new Set();
     const costs = new Set();
     const files = await readDir(cardsPath);
@@ -29,7 +29,7 @@ export class AppController {
         if (!card.rarity) {
           card.rarity = 'Common';
         }
-        rareties.add(card.rarity);
+        rarities.add(card.rarity);
 
         if (card.types) {
           card.types.forEach(type => types.add(type))
@@ -44,6 +44,7 @@ export class AppController {
       }
       cardAmount += cards.length;
     }
-    return [...rareties];
+    console.log(rarities);
+    return [...rarities];
   }
 }
