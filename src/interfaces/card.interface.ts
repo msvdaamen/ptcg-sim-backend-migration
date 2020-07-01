@@ -1,5 +1,8 @@
 import {AttackInterface} from "./attack.interface";
 import {WeaknessInterface} from "./weakness.interface";
+import {PokemonTypes} from "../types/pokemon-types";
+import {AbilityInterface} from "./ability.interface";
+import {CostTypes} from "../types/cost-types";
 
 export interface CardInterface {
     id: string;
@@ -9,18 +12,20 @@ export interface CardInterface {
     subtype: string;
     supertype: string;
     hp: string;
-    retreatCost: string[];
-    convertedRetreatCost: number;
+    retreatCost: CostTypes[];
+    convertedRetreatCost: CostTypes;
+    ability: AbilityInterface,
     number: string;
     artist: string;
     rarity: string;
     series: string;
     set: string;
     setCode: string;
-    types: string[];
+    types?: PokemonTypes[];
     attacks: AttackInterface[];
     weaknesses: WeaknessInterface[];
     nationalPokedexNumber: number;
-    evolvesTo: string;
+    evolvesFrom: string;
+    evolvesTo: string[];
 }
 
