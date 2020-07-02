@@ -14,6 +14,7 @@ export class AppController {
   @Get()
   async getHello() {
     const cardsPath = './pokemon-tcg-data/cards';
+    const deckPath = './pokemon-tcg-data/decks';
     let cardAmount = 0;
     const rarities = new Set();
     const types = new Set();
@@ -23,7 +24,7 @@ export class AppController {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const data = await readFile(path.resolve(cardsPath, file));
-      const cards: CardInterface[] = JSON.parse(data);
+      const cards: CardInterface[] = JSON.parse(data).filter(card => card.nationalPokedexNumber);
       for (let c = 0; c < cards.length; c++) {
         const card = cards[c];
         if (!card.rarity) {
@@ -44,7 +45,6 @@ export class AppController {
       }
       cardAmount += cards.length;
     }
-    console.log(rarities);
     return [...rarities];
   }
 }
