@@ -59,8 +59,6 @@ export class AppController {
         }
       }
     }
-
-    console.log(cardSet.size)
   }
 
   @Get()
