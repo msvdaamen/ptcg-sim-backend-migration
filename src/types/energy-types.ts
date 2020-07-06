@@ -1,6 +1,6 @@
 
 
-export type CostTypes =
+export type EnergyTypes =
     'Grass' |
     'Colorless' |
     'Fire' |
@@ -10,5 +10,4 @@ export type CostTypes =
     'Fighting' |
     'Darkness' |
     'Metal' |
-    'Fairy' |
-    'Free';
+    'Fairy';

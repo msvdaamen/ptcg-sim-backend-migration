@@ -1,9 +1,9 @@
-import {CostTypes} from "../types/cost-types";
+import {EnergyTypes} from "../types/energy-types";
 
 export interface AttackInterface {
     name: string;
-    cost: CostTypes[];
-    convertedEnergyCost: CostTypes;
+    cost: EnergyTypes[];
+    convertedEnergyCost: EnergyTypes;
     damage: string;
     text: string;
 }

@@ -2,7 +2,7 @@ import {AttackInterface} from "./attack.interface";
 import {WeaknessInterface} from "./weakness.interface";
 import {PokemonTypes} from "../types/pokemon-types";
 import {AbilityInterface} from "./ability.interface";
-import {CostTypes} from "../types/cost-types";
+import {EnergyTypes} from "../types/energy-types";
 import {RarityTypes} from "../types/rarity-types";
 
 export interface CardInterface {
@@ -13,8 +13,8 @@ export interface CardInterface {
     subtype: string;
     supertype: string;
     hp: string;
-    retreatCost: CostTypes[];
-    convertedRetreatCost: CostTypes;
+    retreatCost: EnergyTypes[];
+    convertedRetreatCost: EnergyTypes;
     ability: AbilityInterface,
     number: string;
     artist: string;
