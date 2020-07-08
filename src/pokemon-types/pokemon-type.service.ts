@@ -1,7 +1,14 @@
 import {PokemonType} from "../models/pokemon-type";
+import {Repository} from "typeorm";
+import {InjectRepository} from "@nestjs/typeorm";
 
 
 export class PokemonTypeService {
+
+    constructor(
+        @InjectRepository(PokemonType)
+        private readonly repository: Repository<PokemonType>
+    ) { }
 
     private _types: PokemonType[] = [
         {
@@ -50,7 +57,26 @@ export class PokemonTypeService {
         },
     ];
 
+    private _typesMap: Map<string, PokemonType>;
+
+    // TODO remove migrate function
+    async migrate() {
+        if (await this.repository.count() === 0) {
+            await this.repository.insert(this.types);
+        }
+    }
+
     get types() {
         return this._types;
+    }
+
+    get typesMap() {
+        if (!this._typesMap) {
+            this._typesMap = new Map<string, PokemonType>();
+            this.types.forEach(type => {
+                this._typesMap.set(type.name, type);
+            })
+        }
+        return this._typesMap;
     }
 }

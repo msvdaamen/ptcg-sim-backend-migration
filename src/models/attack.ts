@@ -9,12 +9,12 @@ export class Attack {
     @Column()
     name: string
 
-    @Column()
-    convertedEnergyCost: number
+    @Column({name: 'converted_energy_cost'})
+    convertedEnergyCost: number;
 
     @Column()
-    damage: number
+    damage: number;
 
     @Column()
-    description: string
+    description: string;
 }

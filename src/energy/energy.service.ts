@@ -1,7 +1,15 @@
 import {Energy} from "../models/energy";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
 
 
 export class EnergyService {
+
+    constructor(
+        @InjectRepository(Energy)
+        private readonly repository: Repository<Energy>
+    ) {
+    }
 
     private _energies: Energy[] = [
         {
@@ -45,6 +53,22 @@ export class EnergyService {
             name: 'Fairy'
         }
     ];
+    private _energyMap: Map<string, Energy>;
+
+    // TODO remove migrate function
+    async migrate() {
+        if (await this.repository.count() === 0) {
+            await this.repository.insert(this.energies);
+        }
+    }
+
+    get energyMap() {
+        if(!this._energyMap) {
+            this._energyMap = new Map<string, Energy>();
+            this.energies.forEach(energy => this._energyMap.set(energy.name, energy));
+        }
+        return this._energyMap;
+    }
 
     get energies() {
         return this._energies;

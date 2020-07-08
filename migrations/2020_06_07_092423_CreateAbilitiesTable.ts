@@ -8,8 +8,10 @@ export default class CreateAbilitiesTable extends Migration {
     async up() {
         await Schema.create('abilities', (table: Blueprint) => {
             table.id();
-            table.string('name').unique();
+            table.string('name');
             table.text('description').nullable();
+
+            table.index('name');
         })
     }
 

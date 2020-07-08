@@ -10,7 +10,7 @@ export default class CreateAttacksTable extends Migration {
             table.id();
             table.string('name').unique();
             table.integer('converted_energy_cost').nullable();
-            table.integer('damage').nullable();
+            table.string('damage', 10).nullable();
             table.text('description').nullable();
         })
     }
