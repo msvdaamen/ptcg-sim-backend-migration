@@ -21,8 +21,8 @@ export class CardSetService {
     async migrate(sets: Partial<CardSet>[]) {
         if (await this.repository.count() === 0) {
             await this.repository.insert(sets);
-            await this.setCardSets();
         }
+        await this.setCardSets();
     }
 
     async setCardSets() {
@@ -31,7 +31,7 @@ export class CardSetService {
         }
     }
 
-    get energyMap() {
+    get setMap() {
         if(!this._setMap) {
             this._setMap = new Map<string, CardSet>();
             this.sets.forEach(set => this._setMap.set(set.code, set));

@@ -17,8 +17,8 @@ export class TypeService {
     async migrate(types: Partial<Type>[]) {
         if (await this.repository.count() === 0) {
             await this.repository.insert(types);
-            await this.setTypes();
         }
+        await this.setTypes();
     }
 
     async setTypes() {

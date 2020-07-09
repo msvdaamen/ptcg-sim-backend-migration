@@ -17,8 +17,9 @@ interface Returns {
   series: Partial<Serie>[];
   artists: Partial<Artist>[];
   cardSets: Partial<CardSet>[];
-  attacks: Partial<Attack>[],
-  attackEnergies: Map<string, string[]>
+  attacks: Partial<Attack>[];
+  attackEnergies: Map<string, string[]>;
+  cards: CardInterface[];
 }
 
 @Injectable()
@@ -40,11 +41,13 @@ export class AppService {
     const files = await readDir(cardsPath);
     const attacks = new Map<string, AttackInterface>()
     const attackEnergies = new Map<string, string[]>()
+    const cardArray: CardInterface[] = [];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const data = await readFile(path.resolve(cardsPath, file));
       const cards: CardInterface[] = JSON.parse(data);
+      cardArray.push(...cards);
       cardAmount += cards.length;
 
       for(let i = 0; i < cards.length; i++) {
@@ -92,7 +95,8 @@ export class AppService {
       artists: [...artists].map(artist => {return {name: artist}}),
       cardSets: [...cardSet].map(set => {return {name: set, code: cardCode.get(set)}}),
       attacks: [...attacks.values()].map(attack => {return {name: attack.name, convertedEnergyCost: attack.convertedEnergyCost, damage: attack.damage as number, description: attack.text}}),
-      attackEnergies: attackEnergies
+      attackEnergies: attackEnergies,
+      cards: cardArray
     }
   }
 }

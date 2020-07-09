@@ -10,8 +10,6 @@ export default class CreateAbilitiesTable extends Migration {
             table.id();
             table.string('name');
             table.text('description').nullable();
-
-            table.index('name');
         })
     }
 

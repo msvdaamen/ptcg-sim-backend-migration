@@ -40,7 +40,8 @@ export class AppController {
       artists,
       cardSets,
       attacks,
-      attackEnergies
+      attackEnergies,
+      cards
     } = await this.appService.init();
 
 
@@ -54,7 +55,7 @@ export class AppController {
     await this.cardSetService.migrate(cardSets);
     await this.attackService.migrateAttacks(attacks);
     await this.attackService.migrateAttackEnergy(attackEnergies);
-    await this.cardService.migrate();
+    await this.cardService.migrate(cards);
     return [];
   }
 }

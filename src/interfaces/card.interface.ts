@@ -28,5 +28,6 @@ export interface CardInterface {
     nationalPokedexNumber: number;
     evolvesFrom: string;
     evolvesTo: string[];
+    text: string[];
 }
 

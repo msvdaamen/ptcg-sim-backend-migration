@@ -20,8 +20,8 @@ export class SerieService {
     async migrate(series: Partial<Serie>[]) {
         if (await this.repository.count() === 0) {
             await this.repository.insert(series);
-            await this.setSeries();
         }
+        await this.setSeries();
     }
 
     async setSeries() {

@@ -19,8 +19,8 @@ export class AbilityService {
     async migrate(abilities: Partial<Ability>[]) {
         if (await this.repository.count() === 0) {
             await this.repository.insert(abilities);
-            await this.setAbilities();
         }
+        await this.setAbilities();
     }
 
     async setAbilities() {

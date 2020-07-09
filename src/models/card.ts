@@ -18,13 +18,13 @@ export class Card {
     @Column({name: 'card_set_id'})
     cardSetId: number;
 
-    @Column({name: 'artist_id'})
+    @Column({name: 'artist_id', nullable: true})
     artistId: number;
 
     @Column({name: 'series_id'})
     seriesId: number;
 
-    @Column({name: 'subtype_id'})
+    @Column({name: 'subtype_id', nullable: true})
     subtypeId: number;
 
     @Column({name: 'supertype_id'})
@@ -37,13 +37,13 @@ export class Card {
     hp: number;
 
     @Column({nullable: true})
-    number: number;
+    number: string;
 
     @Column({name: 'national_pokedex_number', nullable: true})
     nationalPokedexNumber: number;
 
     @Column({nullable: true})
-    description: number;
+    description: string;
 
     @Column({name: 'ancient_trait', nullable: true})
     ancientTrait: string;

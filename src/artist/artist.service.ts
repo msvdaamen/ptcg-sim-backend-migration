@@ -17,8 +17,8 @@ export class ArtistService {
     async migrate(artists: Partial<Artist>[]) {
         if (await this.repository.count() === 0) {
             await this.repository.insert(artists);
-            await this.setArtists();
         }
+        await this.setArtists();
     }
 
     async setArtists() {

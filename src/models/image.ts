@@ -5,11 +5,14 @@ import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 export class Image {
 
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Column()
     name: string;
 
     @Column()
     filename: string;
+
+    @Column()
+    url: string;
 }

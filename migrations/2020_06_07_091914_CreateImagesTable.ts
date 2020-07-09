@@ -10,6 +10,7 @@ export default class CreateImagesTable extends Migration {
             table.id();
             table.string('name').unique();
             table.string('filename').unique();
+            table.string('url').unique();
         });
     }
 
