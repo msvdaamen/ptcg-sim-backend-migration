@@ -25,6 +25,7 @@ export interface CardInterface {
     types?: PokemonTypes[];
     attacks: AttackInterface[];
     weaknesses: WeaknessInterface[];
+    resistances: WeaknessInterface[];
     nationalPokedexNumber: number;
     evolvesFrom: string;
     evolvesTo: string[];

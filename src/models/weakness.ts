@@ -10,5 +10,5 @@ export class Weakness {
     pokemonTypeId: number;
 
     @Column()
-    value: number;
+    value: string;
 }

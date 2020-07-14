@@ -62,7 +62,7 @@ export class AttackService {
     get attackMap() {
         if(!this._attackMap) {
             this._attackMap = new Map<string, Attack>();
-            this.attacks.forEach(attack => this._attackMap.set(attack.name, attack));
+            this.attacks.forEach(attack => this._attackMap.set(attack.name.toLowerCase(), attack));
         }
         return this._attackMap;
     }

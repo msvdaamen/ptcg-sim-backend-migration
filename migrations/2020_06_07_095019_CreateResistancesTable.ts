@@ -9,7 +9,7 @@ export default class CreateResistancesTable extends Migration {
         await Schema.create('resistances', (table: Blueprint) => {
             table.unsignedInteger('card_id');
             table.unsignedInteger('pokemon_type_id');
-            table.float('value');
+            table.string('value', 10);
 
             table.unique(['card_id', 'pokemon_type_id']);
 

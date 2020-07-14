@@ -10,5 +10,5 @@ export class Resistance {
     pokemonTypeId: number;
 
     @Column()
-    value: number;
+    value: string;
 }

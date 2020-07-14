@@ -9,7 +9,7 @@ export default class CreateWeaknessesTable extends Migration {
         await Schema.create('weaknesses', (table: Blueprint) => {
             table.unsignedInteger('card_id');
             table.unsignedInteger('pokemon_type_id');
-            table.float('value');
+            table.string('value', 10);
 
             table.unique(['card_id', 'pokemon_type_id']);
 

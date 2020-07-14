@@ -17,6 +17,7 @@ export default class CreateCardsTable extends Migration {
             table.unsignedInteger('subtype_id').nullable();
             table.unsignedInteger('supertype_id');
             table.unsignedInteger('ability_id').nullable();
+            table.string('name');
             table.string('hp').nullable();
             table.unsignedInteger('number').nullable();
             table.unsignedInteger('national_pokedex_number').nullable();

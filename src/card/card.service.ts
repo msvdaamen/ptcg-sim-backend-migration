@@ -15,6 +15,12 @@ import {CardInterface} from "../interfaces/card.interface";
 import {Image} from "../models/image";
 import * as fs from "fs";
 import * as request from 'request';
+import {CardHasAttack} from "../models/card-has-attack";
+import {CardHasPokemonType} from "../models/card-has-pokemon-type";
+import {CardRetreatEnergy} from "../models/card-retreat-energy";
+import {Resistance} from "../models/resistance";
+import {Weakness} from "../models/weakness";
+import {Evolution} from "../models/evolution";
 @Injectable()
 export class CardService {
 
@@ -32,11 +38,23 @@ export class CardService {
         private readonly artistService: ArtistService,
         private readonly cardSetService: CardSetService,
         private readonly attackService: AttackService,
-        private httpService: HttpService
+        @InjectRepository(CardHasAttack)
+        private readonly cardHasAttackRepository: Repository<CardHasAttack>,
+        @InjectRepository(CardHasPokemonType)
+        private readonly cardHasPokemonTypeRepository: Repository<CardHasPokemonType>,
+        @InjectRepository(CardRetreatEnergy)
+        private readonly cardRetreatEnergyRepository: Repository<CardRetreatEnergy>,
+        @InjectRepository(Resistance)
+        private readonly resistanceRepository: Repository<Resistance>,
+        @InjectRepository(Weakness)
+        private readonly weaknessRepository: Repository<Weakness>,
+        @InjectRepository(Evolution)
+        private readonly evolutionRepository: Repository<Evolution>
     ) { }
 
     private _cards: Card[] = [];
     private _cardMap: Map<string, Card>;
+    private _cardNameMap: Map<string, Card>;
     private _images: Image[] = [];
     private _imagesMap: Map<string, Image>
 
@@ -62,7 +80,6 @@ export class CardService {
             index++;
         }
         Promise.all(downloads).then(result => {
-            console.log(index);
             setTimeout(() => {
                 this.downloadImages(images, index);
             }, 5000);
@@ -70,6 +87,163 @@ export class CardService {
     }
 
     async migrate(cards: CardInterface[]) {
+        await this.migrateImages(cards);
+
+
+        if (await this.cardRepository.count() === 0) {
+            const cardInsert = [];
+            cards.forEach(card => {
+                const newCard: Partial<Card> = {
+                    customId: card.id,
+                    imageId: this.getImageId(card.imageUrl),
+                    hresImageId: this.getImageId(card.imageUrlHiRes),
+                    cardSetId: this.getSetId(card.setCode),
+                    artistId: this.getArtistId(card.artist),
+                    seriesId: this.getSeriesId(card.series),
+                    subtypeId: this.getTypeId(card.subtype),
+                    supertypeId: this.getTypeId(card.supertype),
+                    abilityId: this.getAbilityId(card.ability?.name),
+                    name: card.name,
+                    hp: (card.hp && card.hp !== 'None' ? parseInt(card.hp) : null),
+                    number: (card.number ? card.number : null),
+                    nationalPokedexNumber: (card.nationalPokedexNumber ? card.nationalPokedexNumber : null),
+                    description: (card.text ? card.text.join('\n') : null),
+                    // TODO make trait table
+                    ancientTrait: null
+                };
+                cardInsert.push(newCard);
+            });
+            await this.cardRepository.insert(cardInsert);
+        }
+        await this.setCards();
+
+        await this.migrateCardHasAttack(cards);;
+        await this.migrateCardHasPokemonType(cards);
+        await this.migrateCardRetreatEnergy(cards);
+        await this.migrateResistances(cards);
+        await this.migrateWeaknesses(cards);
+        await this.migrateEvolutions(cards);
+    }
+
+    async migrateEvolutions(cards: CardInterface[]) {
+        if (await this.evolutionRepository.count() === 0) {
+            const evolutions: Evolution[] = [];
+            cards.forEach(card => {
+                if (card.evolvesTo) {
+                    card.evolvesTo.forEach(evolveTo => {
+                        if (!this.cardNameMap.has(evolveTo)) {
+                            if (this.cardNameMap.has('Galarian ' + evolveTo)) {
+                                evolveTo = 'Galarian ' + evolveTo;
+                            }
+                        }
+                        if (!this.cardNameMap.has(evolveTo)) {
+                            return;
+                        }
+                        evolutions.push({
+                            cardId: this.cardMap.get(card.id).id,
+                            cardEvolutionId: this.cardNameMap.get(evolveTo).id
+                        });
+                    });
+                }
+            });
+            await this.evolutionRepository.insert(evolutions);
+        }
+    }
+
+    async migrateWeaknesses(cards: CardInterface[]) {
+        if (await this.weaknessRepository.count() === 0) {
+            const weaknesses: Weakness[] = [];
+            cards.forEach(card => {
+                if (card.weaknesses) {
+                    card.weaknesses.forEach(weakness => {
+                        if (weakness.type === 'Dark') {
+                            weakness.type = 'Darkness';
+                        }
+                        if (!this.pokemonTypeService.typesMap.has(weakness.type)) {
+                            console.table(weakness.type);
+                        }
+                        weaknesses.push({
+                            pokemonTypeId: this.pokemonTypeService.typesMap.get(weakness.type).id,
+                            cardId: this.cardMap.get(card.id).id,
+                            value: weakness.value
+                        });
+                    })
+                }
+            });
+            await this.weaknessRepository.createQueryBuilder('attacks').insert().values(weaknesses).orIgnore().execute();
+        }
+    }
+
+    async migrateResistances(cards: CardInterface[]) {
+        if (await this.resistanceRepository.count() === 0) {
+            const resistances: Resistance[] = [];
+            cards.forEach(card => {
+                if (card.resistances) {
+                    card.resistances.forEach(resistance => {
+                        resistances.push({
+                            pokemonTypeId: this.pokemonTypeService.typesMap.get(resistance.type).id,
+                            cardId: this.cardMap.get(card.id).id,
+                            value: resistance.value
+                        });
+                    })
+                }
+            });
+            await this.resistanceRepository.createQueryBuilder('attacks').insert().values(resistances).orIgnore().execute();
+        }
+    }
+
+    async migrateCardRetreatEnergy(cards: CardInterface[]) {
+        if (await this.cardRetreatEnergyRepository.count() === 0) {
+            const CardRetreatEnergy: CardRetreatEnergy[] = [];
+            cards.forEach(card => {
+                if (card.retreatCost) {
+                    card.retreatCost.forEach(retreatCost => {
+                        CardRetreatEnergy.push({
+                            energyId: this.energyService.energyMap.get(retreatCost).id,
+                            cardId: this.cardMap.get(card.id).id
+                        });
+                    })
+                }
+            });
+            await this.cardRetreatEnergyRepository.createQueryBuilder('attacks').insert().values(CardRetreatEnergy).orIgnore().execute();
+        }
+    }
+
+    async migrateCardHasPokemonType(cards: CardInterface[]) {
+        if (await this.cardHasPokemonTypeRepository.count() === 0) {
+            const cardHasPokemonType: CardHasPokemonType[] = [];
+            cards.forEach(card => {
+                if (card.types) {
+                    card.types.forEach(type => {
+                        cardHasPokemonType.push({
+                            pokemonTypeId: this.pokemonTypeService.typesMap.get(type).id,
+                            cardId: this.cardMap.get(card.id).id
+                        });
+                    })
+                }
+            });
+            await this.cardHasPokemonTypeRepository.createQueryBuilder('attacks').insert().values(cardHasPokemonType).orIgnore().execute();
+        }
+    }
+
+    async migrateCardHasAttack(cards: CardInterface[]) {
+        if (await this.cardHasAttackRepository.count() === 0) {
+            const cardHasAttacks: CardHasAttack[] = [];
+            cards.forEach(card => {
+                if (card.attacks) {
+                    card.attacks.forEach(attack => {
+                        cardHasAttacks.push({
+                            attackId: this.attackService.attackMap.get(attack.name.toLowerCase()).id,
+                            cardId: this.cardMap.get(card.id).id
+                        });
+                    })
+                }
+            });
+            await this.cardHasAttackRepository.createQueryBuilder('attacks').insert().values(cardHasAttacks).orIgnore().execute();
+        }
+    }
+
+    async migrateImages(cards: CardInterface[]) {
         if (await this.imageRepository.count() === 0) {
             const images = new Map<string, Partial<Image>>();
             cards.forEach(card => {
@@ -102,41 +276,20 @@ export class CardService {
             await this.imageRepository.insert([...images.values()]);
         }
         await this.setImages();
-
-
-        if (await this.cardRepository.count() === 0) {
-            const cardInsert = [];
-            cards.forEach(card => {
-                const newCard: Partial<Card> = {
-                    customId: card.id,
-                    imageId: this.getImageId(card.imageUrl),
-                    hresImageId: this.getImageId(card.imageUrlHiRes),
-                    cardSetId: this.getSetId(card.setCode),
-                    artistId: this.getArtistId(card.artist),
-                    seriesId: this.getSeriesId(card.series),
-                    subtypeId: this.getTypeId(card.subtype),
-                    supertypeId: this.getTypeId(card.supertype),
-                    abilityId: this.getAbilityId(card.ability?.name),
-                    hp: (card.hp && card.hp !== 'None' ? parseInt(card.hp) : null),
-                    number: (card.number ? card.number : null),
-                    nationalPokedexNumber: (card.nationalPokedexNumber ? card.nationalPokedexNumber : null),
-                    description: (card.text ? card.text.join('\n') : null),
-                    // TODO make trait table
-                    ancientTrait: null
-                };
-                cardInsert.push(newCard);
-            });
-            // console.log(cardInsert[0]);
-            // console.log(cardInsert[7]);
-            await this.cardRepository.insert(cardInsert);
-        }
-        await this.setCards();
     }
 
     async setCards() {
         if (this._cards.length === 0) {
             this._cards = await this.cardRepository.find();
         }
+    }
+
+    get cardNameMap() {
+        if(!this._cardNameMap) {
+            this._cardNameMap = new Map<string, Card>();
+            this.cards.forEach(card => this._cardNameMap.set(card.name, card));
+        }
+        return this._cardNameMap;
     }
 
     get cardMap() {

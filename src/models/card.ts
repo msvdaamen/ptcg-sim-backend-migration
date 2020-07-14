@@ -33,6 +33,9 @@ export class Card {
     @Column({name: 'ability_id', nullable: true})
     abilityId: number;
 
+    @Column()
+    name: string;
+
     @Column({nullable: true})
     hp: number;
 
