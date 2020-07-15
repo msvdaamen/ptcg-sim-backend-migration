@@ -18,6 +18,8 @@ import {CardRetreatEnergy} from "../models/card-retreat-energy";
 import {Evolution} from "../models/evolution";
 import {Resistance} from "../models/resistance";
 import {Weakness} from "../models/weakness";
+import {CardResolver} from "./card.resolver";
+import {CardLoader} from "./card.loader";
 
 @Module({
     imports: [
@@ -46,7 +48,9 @@ import {Weakness} from "../models/weakness";
         AttackModule,
     ],
     providers: [
-        CardService
+        CardService,
+        CardResolver,
+        CardLoader
     ],
      exports: [
          CardService

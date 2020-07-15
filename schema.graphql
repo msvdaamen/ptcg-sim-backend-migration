@@ -1,0 +1,26 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Image {
+  id: Int!
+  name: String!
+  filename: String!
+  url: String!
+}
+
+type Card {
+  id: Int!
+  name: String!
+  hp: Float!
+  number: String!
+  nationalPokedexNumber: Float!
+  description: String!
+  ancientTrait: String!
+  image: Image
+  hresImage: Image
+}
+
+type Query {
+  cards: [Card!]!
+}

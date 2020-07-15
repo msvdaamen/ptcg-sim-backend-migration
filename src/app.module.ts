@@ -12,6 +12,9 @@ import {ArtistModule} from "./artist/artist.module";
 import {CardSetModule} from "./card-set/card-set.module";
 import {AttackModule} from "./attack/attack.module";
 import {CardModule} from "./card/card.module";
+import {GraphQLModule} from "@nestjs/graphql";
+import {join} from 'path';
+
 
 @Module({
   imports: [
@@ -24,6 +27,17 @@ import {CardModule} from "./card/card.module";
       database: 'ptcg-sim',
       autoLoadEntities: true,
       synchronize: false
+    }),
+    GraphQLModule.forRoot({
+      installSubscriptionHandlers: false,
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts')
+      },
+      autoSchemaFile: 'schema.graphql',
+      cors: {
+        credentials: true,
+        origin: true,
+      },
     }),
     PokemonTypeModule,
     RarityModule,

@@ -1,8 +1,12 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Field, Int, ObjectType} from "@nestjs/graphql";
+import {Image} from "./image";
 
+@ObjectType()
 @Entity({name: 'cards'})
 export class Card {
 
+    @Field(() => Int)
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -33,22 +37,36 @@ export class Card {
     @Column({name: 'ability_id', nullable: true})
     abilityId: number;
 
+    @Field()
     @Column()
     name: string;
 
+    @Field()
     @Column({nullable: true})
     hp: number;
 
+    @Field()
     @Column({nullable: true})
     number: string;
 
+    @Field()
     @Column({name: 'national_pokedex_number', nullable: true})
     nationalPokedexNumber: number;
 
+    @Field()
     @Column({nullable: true})
     description: string;
 
+    @Field()
     @Column({name: 'ancient_trait', nullable: true})
     ancientTrait: string;
+
+    @ManyToOne(() => Image, image => image.card)
+    @JoinColumn({name: 'image_id'})
+    image: Image;
+
+    @ManyToOne(() => Image, image => image.hresCard)
+    @JoinColumn({name: 'hres_image_id'})
+    hresImage: Image;
 
 }
