@@ -103,6 +103,7 @@ export class CardService {
                     subtypeId: this.getTypeId(card.subtype),
                     supertypeId: this.getTypeId(card.supertype),
                     abilityId: this.getAbilityId(card.ability?.name),
+                    rarityId: this.rarityService.rarityMap.has(card.rarity) ? this.rarityService.rarityMap.get(card.rarity).id : null,
                     name: card.name,
                     hp: (card.hp && card.hp !== 'None' ? parseInt(card.hp) : null),
                     number: (card.number ? card.number : null),
@@ -232,8 +233,11 @@ export class CardService {
             cards.forEach(card => {
                 if (card.attacks) {
                     card.attacks.forEach(attack => {
+                        if (!this.attackService.attackMap.get(attack.name.replace('-', ''))) {
+                            console.log(attack.name);
+                        }
                         cardHasAttacks.push({
-                            attackId: this.attackService.attackMap.get(attack.name.toLowerCase()).id,
+                            attackId: this.attackService.attackMap.get(attack.name.replace('-', '')).id,
                             cardId: this.cardMap.get(card.id).id
                         });
                     })

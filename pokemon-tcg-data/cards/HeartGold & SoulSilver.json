@@ -1841,7 +1841,7 @@
         "text": "Search your discard pile for an Energy card and attach it to Blissey."
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Colorless",
           "Colorless",
@@ -3890,7 +3890,7 @@
         "text": ""
       },
       {
-        "name": "Double-edge Claw",
+        "name": "Double-Edge Claw",
         "cost": [
           "Grass",
           "Colorless"

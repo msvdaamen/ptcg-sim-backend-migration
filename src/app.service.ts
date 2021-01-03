@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {readDir, readFile} from "./utils/fs-promise";
 import * as path from 'path';
 import {CardInterface} from "./interfaces/card.interface";
@@ -10,8 +10,10 @@ import {Artist} from "./models/artist";
 import {CardSet} from "./models/card-set";
 import {Attack} from "./models/attack";
 import {AttackInterface} from "./interfaces/attack.interface";
+import {Rarity} from "./models/rarity";
 
 interface Returns {
+  rarities: Partial<Rarity>[];
   types: Partial<Type>[];
   abilities: Partial<Ability>[];
   series: Partial<Serie>[];
@@ -25,11 +27,13 @@ interface Returns {
 @Injectable()
 export class AppService {
 
+  logger = new Logger(AppService.name);
 
   async init(): Promise<Returns> {
     const cardsPath = './pokemon-tcg-data/cards';
     const deckPath = './pokemon-tcg-data/decks';
     let cardAmount = 0;
+    const rarities = new Set<string>();
     const artists = new Set<string>();
     const series = new Set<string>();
     const abilities: AbilityInterface[] = []
@@ -55,6 +59,9 @@ export class AppService {
         if (card.set) {
           cardSet.add(card.set);
           cardCode.set(card.set, card.setCode);
+        }
+        if (card.rarity && !rarities.has(card.rarity)) {
+          rarities.add(card.rarity);
         }
         if (card.artist) {
           artists.add(card.artist);
@@ -82,13 +89,14 @@ export class AppService {
           card.attacks.forEach(attack => {
             const costs = attack.cost;
             delete attack.cost;
-            attacks.set(attack.name, attack);
-            attackEnergies.set(attack.name, costs);
+            attacks.set(attack.name.replace('-', ''), attack);
+            attackEnergies.set(attack.name.replace('-', ''), costs);
           });
         }
       }
     }
     return {
+      rarities: [...rarities].map(rarity => ({name: rarity})),
       types: [...types].map(type => { return {name: type} }),
       abilities: abilities.map(ability => { return {name: ability.name, description: ability.text} }),
       series: [...series].map(serie => {return {name: serie}}),

@@ -37,6 +37,9 @@ export class Card {
     @Column({name: 'ability_id', nullable: true})
     abilityId: number;
 
+    @Column({name: 'rarity_id'})
+    rarityId: number;
+
     @Field()
     @Column()
     name: string;

@@ -30,7 +30,7 @@
     "dataloader": "^2.0.0",
     "graphql": "^15.3.0",
     "graphql-tools": "^6.0.13",
-    "migrationjs": "^0.2.5",
+    "migrationjs": "^0.3.3",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

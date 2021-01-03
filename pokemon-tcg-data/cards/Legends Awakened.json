@@ -5528,7 +5528,7 @@
         "text": "Flip a coin. If heads, the Defending Pokémon is now Confused."
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Grass",
           "Colorless"

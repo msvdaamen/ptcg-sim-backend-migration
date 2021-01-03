@@ -1880,7 +1880,7 @@
         "text": "Flip a coin. If heads, the Defending Pokémon is now Paralyzed."
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Colorless",
           "Colorless",
@@ -2258,7 +2258,7 @@
         "text": "Flip a coin. If heads, the Defending Pokémon is now Confused."
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Grass",
           "Colorless"
@@ -2791,7 +2791,7 @@
     ],
     "attacks": [
       {
-        "name": "Call For Friend",
+        "name": "Call for Friend",
         "cost": [
           "Colorless"
         ],

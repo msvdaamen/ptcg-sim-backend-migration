@@ -17,6 +17,7 @@ export default class CreateCardsTable extends Migration {
             table.unsignedInteger('subtype_id').nullable();
             table.unsignedInteger('supertype_id');
             table.unsignedInteger('ability_id').nullable();
+            table.unsignedInteger('rarity_id').nullable();
             table.string('name');
             table.string('hp').nullable();
             table.unsignedInteger('number').nullable();
@@ -32,6 +33,7 @@ export default class CreateCardsTable extends Migration {
             table.foreign('subtype_id').references('id').on('types').onDelete('set null');
             table.foreign('supertype_id').references('id').on('types').onDelete('cascade');
             table.foreign('ability_id').references('id').on('abilities').onDelete('set null');
+            table.foreign('rarity_id').references('id').on('rarities').onDelete('set null');
         });
     }
 

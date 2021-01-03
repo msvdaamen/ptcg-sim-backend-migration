@@ -2931,7 +2931,7 @@
         "text": ""
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Grass",
           "Colorless"
@@ -4542,7 +4542,7 @@
         "text": "Remove 2 damage counters (1 if there is only 1) from each of your Pokémon. Remove no damage counters from Chansey ex."
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Colorless",
           "Colorless",

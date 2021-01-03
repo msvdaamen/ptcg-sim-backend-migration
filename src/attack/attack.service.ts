@@ -36,14 +36,14 @@ export class AttackService {
         if (await this.attackEnergyRepository.count() === 0) {
             const energies: Partial<AttackHasEnergy>[] = [];
             this.attacks.forEach(attack => {
-                const attackEnergy = attackEnergies.get(attack.name);
+                const attackEnergy = attackEnergies.get(attack.name.replace('-', ''));
                 attackEnergy.forEach(energy => {
-                    if (!this.attackMap.get(attack.name)) {
+                    if (!this.attackMap.get(attack.name.replace('-', ''))) {
                         console.log(attack.name)
                     }
                     if (this.energyService.energyMap.get(energy)) {
                         energies.push({
-                            attackId: this.attackMap.get(attack.name).id,
+                            attackId: this.attackMap.get(attack.name.replace('-', '')).id,
                             energyId: this.energyService.energyMap.get(energy).id
                         });
                     }
@@ -62,7 +62,9 @@ export class AttackService {
     get attackMap() {
         if(!this._attackMap) {
             this._attackMap = new Map<string, Attack>();
-            this.attacks.forEach(attack => this._attackMap.set(attack.name.toLowerCase(), attack));
+            this.attacks.forEach(attack => {
+                this._attackMap.set(attack.name.replace('-', ''), attack);
+            });
         }
         return this._attackMap;
     }

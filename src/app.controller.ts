@@ -34,6 +34,7 @@ export class AppController {
   @Get()
   async getHello() {
     const {
+      rarities,
       types,
       abilities,
       series,
@@ -44,9 +45,8 @@ export class AppController {
       cards
     } = await this.appService.init();
 
-
     await this.pokemonTypeService.migrate();
-    await this.rarityService.migrate();
+    await this.rarityService.migrate(rarities);
     await this.energyService.migrate();
     await this.typeService.migrate(types);
     await this.abilityService.migrate(abilities);

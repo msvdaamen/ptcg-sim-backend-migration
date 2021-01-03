@@ -1472,7 +1472,7 @@
         "text": "Flip a coin until you get tails. For each heads, draw 2 cards."
       },
       {
-        "name": "Double-edge",
+        "name": "Double-Edge",
         "cost": [
           "Colorless",
           "Colorless"
